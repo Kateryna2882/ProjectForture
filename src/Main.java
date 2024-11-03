@@ -1,28 +1,14 @@
+import java.util.InputMismatchException;
 import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) {
-        System.out.println("Hello world!");
-//        int width = 0;
-//        int width1 = 20;
-//        int length = 40;
-//        int ratio = length / width1;
-//        System.out.println(ratio);
-
-        int[] numbers = {1, 2, 3, 4, 5};
-
-//        int lastNumber = numbers[5];
-        int lastNumber = numbers[4];
-
-        System.out.println("The value of the last element is: " + lastNumber);
-        System.out.println("-------------------------------------------------------");
-
         Scanner keyboard = new Scanner(System.in);
-
         System.out.println("Shape Area Calculator");
 
-        while (true) {
+        int invalidAttempts = 0; // Лічильник спроб введення невірного значення
 
+        while (true) {
             System.out.println();
             System.out.println("-=-=-=-=-=-=-=-=-=-");
             System.out.println();
@@ -33,43 +19,55 @@ public class Main {
             System.out.println();
 
             System.out.print("Which shape: ");
-
-            int shape = keyboard.nextInt();
-            System.out.println();
+            int shape = getIntInput(keyboard);
 
             if (shape == 1) {
                 System.out.print("Base: ");
-                int base = keyboard.nextInt();
+                int base = getPositiveIntInput(keyboard);
                 System.out.print("Height: ");
-                int height = keyboard.nextInt();
+                int height = getPositiveIntInput(keyboard);
                 area_triangle(base, height);
+                invalidAttempts = 0; // Скидаємо лічильник, якщо ввід коректний
+
             } else if (shape == 2) {
                 System.out.print("Length: ");
-                int length = keyboard.nextInt();
+                int length = getPositiveIntInput(keyboard);
                 System.out.print("Width: ");
-                int width = keyboard.nextInt();
+                int width = getPositiveIntInput(keyboard);
                 area_rectangle(length, width);
+                invalidAttempts = 0;
+
             } else if (shape == 3) {
                 System.out.print("Radius: ");
-                int radius = keyboard.nextInt();
+                int radius = getPositiveIntInput(keyboard);
                 area_circle(radius);
+                invalidAttempts = 0;
+
             } else if (shape == 4) {
                 quit();
                 break;
+
+            } else {
+                System.out.println("Invalid option. Please select a number from 1 to 4.");
+                invalidAttempts++; // Збільшуємо лічильник при некоректному введенні
+                if (invalidAttempts >= 3) {
+                    System.out.println("Too many invalid attempts. Exiting program.");
+                    break;
+                }
             }
         }
     }
 
     public static double area_triangle(int base, int height) {
         System.out.println();
-        int A = (base * height) / 2;
+        double A = (base * height) / 2.0;
         System.out.println("The area is " + A + ".");
         return A;
     }
 
-    public static int area_rectangle(int length, int width) {
+    public static double area_rectangle(int length, int width) {
         System.out.println();
-        int A = length * width;
+        double A = length * width;
         System.out.println("The area is " + A + ".");
         return A;
     }
@@ -81,9 +79,29 @@ public class Main {
         return A;
     }
 
-    public static String quit() {
+    public static void quit() {
         System.out.println("Good Bye");
-        return null;
+    }
 
+    public static int getIntInput(Scanner scanner) {
+        while (true) {
+            try {
+                return scanner.nextInt();
+            } catch (InputMismatchException e) {
+                System.out.print("Invalid input. Please enter an integer: ");
+                scanner.next();
+            }
+        }
+    }
+
+    public static int getPositiveIntInput(Scanner scanner) {
+        int value;
+        do {
+            value = getIntInput(scanner);
+            if (value <= 0) {
+                System.out.print("Please enter a positive integer: ");
+            }
+        } while (value <= 0);
+        return value;
     }
 }
